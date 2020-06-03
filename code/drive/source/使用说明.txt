@@ -1,0 +1,9 @@
+1.执行动态库编译
+make
+
+2.将动态库 libmlx.so 放到 /usr/lib/
+sudo cp libmlx.so /usr/lib/
+
+3.头文件包含
+mlx.h
+
