@@ -1,0 +1,26 @@
+/dts-v1/;
+
+/ {
+	compatible = "allwinner,sun8i-h3";
+
+	fragment@0 {
+		target-path = "/aliases";
+
+		__overlay__ {
+			i2c1 = "/soc/i2c@1c2b000";
+		};
+	};
+
+	fragment@1 {
+		target = < 0xffffffff >;
+
+		__overlay__ {
+			status = "okay";
+			clock-frequency = <400000>;
+		};
+	};
+
+	__fixups__ {
+		i2c1 = "/fragment@1:target:0";
+	};
+};

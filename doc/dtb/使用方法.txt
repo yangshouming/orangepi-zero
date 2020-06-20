@@ -1,0 +1,33 @@
+
+
+i2c0设备树覆盖
+
+/boot/dtb/overlay/sun8i-h3-i2c0.dtbo
+
+sudo cp /boot/dtb/overlay/sun8i-h3-i2c0.dtbo /home/pi/dts/i2c0/sun8i-h3-i2c0-original.dtbo
+dtc -I dtb -O dts -o /home/pi/dts/i2c0/sun8i-h3-i2c0-temp.dts /home/pi/dts/i2c0/sun8i-h3-i2c0-original.dtbo
+
+nano /home/pi/dts/i2c0/sun8i-h3-i2c0-temp.dts
+clock-frequency = <400000>;
+dtc -I dts -O dtb -o /home/pi/dts/i2c0/sun8i-h3-i2c0.dtbo /home/pi/dts/i2c0/sun8i-h3-i2c0-temp.dts
+
+
+cp /boot/dtb/overlay/sun8i-h3-i2c0.dtbo /boot/dtb/overlay/sun8i-h3-i2c0.dtbo.bak
+
+cp /home/pi/dts/i2c0/sun8i-h3-i2c0.dtbo /boot/dtb/overlay/sun8i-h3-i2c0.dtbo
+
+
+i2c1设备树覆盖
+/boot/dtb/overlay/sun8i-h3-i2c1.dtbo
+
+sudo cp /boot/dtb/overlay/sun8i-h3-i2c1.dtbo /home/pi/dts/i2c1/sun8i-h3-i2c1-original.dtbo
+dtc -I dtb -O dts -o /home/pi/dts/i2c1/sun8i-h3-i2c1-temp.dts /home/pi/dts/i2c1/sun8i-h3-i2c1-original.dtbo
+nano /home/pi/dts/i2c1/sun8i-h3-i2c1-temp.dts
+
+clock-frequency = <400000>;
+
+dtc -I dts -O dtb -o /home/pi/dts/i2c1/sun8i-h3-i2c1.dtbo /home/pi/dts/i2c1/sun8i-h3-i2c1-temp.dts
+cp /boot/dtb/overlay/sun8i-h3-i2c1.dtbo /boot/dtb/overlay/sun8i-h3-i2c1.dtbo.bak
+cp /home/pi/dts/i2c1/sun8i-h3-i2c1.dtbo /boot/dtb/overlay/sun8i-h3-i2c1.dtbo
+
+

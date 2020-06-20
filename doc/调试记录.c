@@ -53,19 +53,18 @@ sudo cp /boot/dtb/overlay/sun8i-h3-i2c0.dtbo /boot/dtb/overlay/sun8i-h3-i2c0.dtb
 
 
 
+香橙派已经搭建好，相应的驱动已经集成到系统里
 
-
-
-
-源码
+传感器通信驱动源码修改点：
 MLX90640_SWI2C_Driver.c
 60行 注释以下两条语句
-
 // ioctl(fd, I2C_TIMEOUT, 5); //设置超时时间
 // ioctl(fd, I2C_RETRIES, 2); //设置重试次数
 
+参考板子上的 /home/pi/mlx/code/drive 目录
 
-
-
+注意点：WiFi上电2分钟后才连接
 
 */
+
+
