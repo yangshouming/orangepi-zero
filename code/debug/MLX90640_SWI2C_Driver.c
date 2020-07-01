@@ -39,7 +39,7 @@
 
 #include "MLX90640_I2C_Driver.h"
 
-#define DEVICE_NODE "/dev/i2c-0"
+#define DEVICE_NODE "/dev/i2c-1"
 
 int fd;
 
@@ -205,7 +205,6 @@ int MLX90640_I2CInit()
     return ret;
 }
 
-uint8_t iic_read_buff[1664] = {0x00};
 /*
 * 函数名称 : MLX90640_I2CRead
 * 功能描述 : This function reads a desired number of words from a selected MLX90640 device memory starting from a
@@ -221,7 +220,7 @@ given address and stores the data in the MCU memory location defined by the user
 /******************************************************************************/
 int MLX90640_I2CRead(uint8_t slaveAddr, uint16_t startAddress, uint16_t nMemAddressRead, uint16_t *data)
 {
-
+    uint8_t iic_read_buff[1664] = {0x00};
     uint32_t err_code = 0;
 
     uint16_t cnt = 0;

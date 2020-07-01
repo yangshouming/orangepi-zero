@@ -65,6 +65,30 @@ MLX90640_SWI2C_Driver.c
 
 注意点：WiFi上电2分钟后才连接
 
+
+
+
+1 首先 添加dns服务器
+
+vi /etc/resolv.conf
+
+在文件中添加如下两行：
+
+nameserver 8.8.8.8
+nameserver 114.114.114.114
+
+ping www.baidu.com
+ping 14.215.177.38
+
+//开机后启动------------------------------------------OK
+sudo service network-manager start
+
+
+
+readelf -d libmlx.so|grep TEXTREL
+readelf -r libmlx.so|grep R_ARM_REL32
+
+cp libmlx.so /usr/lib/
+
+
 */
-
-

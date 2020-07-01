@@ -46,20 +46,30 @@ fi
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
 cat>/etc/apt/sources.list <<EOF
 deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free
 deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-updates main contrib non-free
 deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free
-deb https://mirrors.tuna.tsinghua.edu.cn/debian-security/ buster/updates main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ buster-backports main contrib non-free
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free
 EOF
 
 cp /etc/apt/sources.list.d/armbian.list  /etc/apt/sources.list.d/armbian.list.bak
 cat>/etc/apt/sources.list.d/armbian.list <<EOF
-deb https://mirrors.tuna.tsinghua.edu.cn/debian/ main buster-utils buster-desktop
+deb https://mirrors.tuna.tsinghua.edu.cn/armbian/ buster main buster-utils buster-desktop
 EOF
 
-apt-get update
+apt-get update -y
 apt-get upgrade -y
+
 echo -e "\033[36m "source update suceess" \033[0m"
 
+#tools install
+apt install i2c-tools -y
+apt install git -y
+
+echo -e "\033[36m "tools install suceess" \033[0m"
 
 #config vim
 cd /home/pi
@@ -76,7 +86,19 @@ set hlsearch
 EOF
 echo -e "\033[36m "config vim" \033[0m"
 
+timedatectl set-timezone Asia/Shanghai
+
 echo -e "alias date='date \"+%a %b %d %H:%M:%S %Z %Y\"'" >> /home/pi/.bashrc
+date
+
+#wiringOP
+git clone https://github.com/orangepi-xunlong/wiringOP.git
+cd wiringOP
+chmod 777 build
+./build
+gpio -v
+echo -e "\033[36m "wiringOP" \033[0m"
+
 
 exit 0
 

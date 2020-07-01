@@ -74,7 +74,7 @@ static float get_source_data_percent;     //
 static float get_calc_data_percent;       //
 
 static unsigned long run_cnt_max; //最大运行次数统计
-
+int error_image;
 /******************************************************************************\
                              Functions definitions
 \******************************************************************************/
@@ -133,20 +133,21 @@ int main(int argc, char **argv)
     printf("mlx_init ok\n");
 
     //设置刷新率
-    delay(100);
+    usleep(100 * 1000);
     mlx_set_refresh_rate(0X05);
-    delay(100);
+    usleep(100 * 1000);
     mlx_get_refresh_rate(&rate);
     printf("mlx_get_refresh_rate 0x%x\n", rate);
 
     while (1)
     {
+        printf("\n================================================================================\n");
         gettimeofday(&start, NULL); //计时开始
 
         temp = start.tv_sec;
         temp = temp * 1000;
         temp = temp + start.tv_usec;
-        printf("temp %lld\n", temp);
+        printf("timetamp %lld\n", temp);
 
         if (mlx_get_source_data(mlx90640Frame_app) == 0) //采集数据
         {
@@ -161,86 +162,82 @@ int main(int argc, char **argv)
             fwrite(&mlx90640To_app, 4, 768, fp); //图像
             fwrite(&temp, 8, 1, fp);             //时间戳
             fclose(fp);
-        }
 
-        int image_error = 0;
-        temp_max = 0;
-        temp_min = 1000;
+            int image_error = 0;
+            temp_max = 0;
+            temp_min = 1000;
 
-        printf("mlx_get_calculate_data\n");
-        for (i = 0; i < 768;)
-        {
-            //最大值与最小值
-            if (mlx90640To_app[i] > temp_max)
+            // printf("mlx_get_calculate_data\n");
+            for (i = 0; i < 768;)
             {
-                temp_max = mlx90640To_app[i];
+                //最大值与最小值
+                if (mlx90640To_app[i] > temp_max)
+                {
+                    temp_max = mlx90640To_app[i];
+                }
+
+                if (mlx90640To_app[i] < temp_min)
+                {
+                    temp_min = mlx90640To_app[i];
+                }
+
+                if (mlx90640To_app[i] > 40) //检测是否出现高温值
+                {
+                    printf("\npixel hight number=%d location=(%d,%d) value=%.1f***********************\n", i, i / 32, i % 32, mlx90640To_app[i]);
+                    // return -1; //定位高温点，并退出测试
+                    image_error = 1;
+                }
+                else if (mlx90640To_app[i] < 15)
+                {
+                    printf("\npixel low number=%d location=(%d,%d) value=%.1f***********************\n", i, i / 32, i % 32, mlx90640To_app[i]);
+                    // return -1; //定位高温点，并退出测试
+                    image_error = 1;
+                }
+                else
+                {
+                    //正常打印图像
+                    printf("%.1f ", mlx90640To_app[i]);
+                }
+
+                i++;
+                if ((i % 32) == 0)
+                {
+                    printf("\n");
+                }
             }
+            printf("\n");
 
-            if (mlx90640To_app[i] < temp_min)
+            if (image_error == 0)
             {
-                temp_min = mlx90640To_app[i];
-            }
-
-#if 1
-
-            if (mlx90640To_app[i] > 40) //检测是否出现高温值
-            {
-                printf("\n error i=%d value =%.1f***********************\n", i, mlx90640To_app[i]);
-                // return -1; //定位高温点，并退出测试
-                image_error = 1;
+                printf("image ok \n");
             }
             else
             {
-                //正常打印图像
-                printf("%.1f ", mlx90640To_app[i]);
+                error_image++;
+                printf("image eroor\n");
+                for (i = 0; i < 832;)
+                {
+
+                    printf("%04x ", mlx90640Frame_app[i]);
+                    i++;
+                    if ((i % 32) == 0)
+                    {
+                        printf("\n");
+                    }
+                }
+
+                // return -1;
             }
 
-#else
-            if (mlx90640To_app[i] < 20)
-            {
-                printf("A ");
-            }
-            else if (mlx90640To_app[i] < 25)
-            {
-                printf("B ");
-            }
-            else if (mlx90640To_app[i] < 30)
-            {
-                printf("# ");
-            }
-            else
-            {
-                printf("* ");
-            }
+            printf("temp_max=%.1f temp_min=%.1f error image count=%d\n", temp_max, temp_min, error_image);
 
-#endif
+            usleep(10 * 1000);
 
-            i++;
-            if ((i % 32) == 0)
-            {
-                printf("\n");
-            }
+            gettimeofday(&end, NULL); //计时结束
+            interval = 1000000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec);
+
+            printf("interval = %f  fps = %0.1f \n", interval / 1000.0, 1000000.0 / interval);
         }
-        printf("\n");
-
-        if (image_error == 0)
-        {
-            printf("image ok \n");
-        }
-        else
-        {
-            printf("image eroor \n");
-            return -1;
-        }
-
-        printf("temp_max= %.1f temp_min= %.1f\n", temp_max, temp_min);
-
-        delay(10);
-
-        gettimeofday(&end, NULL); //计时结束
-        interval = 1000000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec);
-
-        printf("interval = %f  fps = %0.1f \n", interval / 1000.0, 1000000.0 / interval);
 
         run_cnt++;
         //if (run_cnt >= run_cnt_max) //成功率数据统计
@@ -355,7 +352,7 @@ int mlx_init(void)
         printf("mlx_get_refresh_rate ok\n");
     }
 
-    delay(500); //操作延时
+    usleep(500 * 1000); //操作延时
     //EEP读出解析
     ret = MLX90640_DumpEE(SLAVEADDRESS, eeMLX90640);
     printf("MLX90640_DumpEE ret %d \n", ret);
@@ -405,7 +402,7 @@ int mlx_init(void)
             printf("MLX90640_SetRefreshRate ret %d \n", ret);
         }
 
-        delay(500); //操作延时
+        usleep(500 * 1000); //操作延时
         //读出解析前3笔图像数据，并舍弃
         for (i = 0; i < 3; i++)
         {
@@ -417,7 +414,7 @@ int mlx_init(void)
             // printf("MLX90640_GetFrameData tr %f \n", tr);
             MLX90640_CalculateTo(mlx90640Frame, &mlx90640, emissivity, tr, mlx90640To); //The object temperatures
 
-            delay(500); //需要延时
+            usleep(500 * 1000); //需要延时
         }
     }
 

@@ -31,6 +31,7 @@
 #include "MLX90640_I2C_Driver.h"
 #include "MLX90640_API.h"
 #include "mlx.h"
+#include <unistd.h>
 
 /******************************************************************************\
                              Variables definitions
@@ -47,7 +48,7 @@ static float tr;         //环境温度
 static int sensor_type;  //设备类型 0-90640 1-90641
 static int ta_shift;     //温度偏移值 8-MLX90640  5-MLX90641
 
-#if 1
+#if 0
 //以下是测试数据------------------------------------------------------------------------
 static uint16_t mlx90640Frame_app[834]; //原始图像数据   APP测试数据
 static float mlx90640To_app[768];       //计算后的图像数据		APP测试数据
@@ -73,7 +74,7 @@ static void printf_dump_uint8_t(uint8_t *pdata, int length);
 static void printf_dump_uint16_t(uint16_t *pdata, int length);
 static float get_data_correct_percent(int data_target, int data_source);
 
-uint8_t rate = 0;
+static uint8_t rate = 0;
 
 int main(int argc, char **argv)
 {
@@ -259,7 +260,7 @@ int mlx_init(void)
         return -1;
     }
 
-    delay(500); //操作延时
+    usleep(500 * 1000); //操作延时
     //EEP读出解析
     ret = MLX90640_DumpEE(SLAVEADDRESS, eeMLX90640);
     // printf("MLX90640_DumpEE ret %d \n", ret);
@@ -309,7 +310,7 @@ int mlx_init(void)
             printf("MLX90640_SetRefreshRate ret %d \n", ret);
         }
 
-        delay(500); //操作延时
+        usleep(500 * 1000); //操作延时
         //读出解析前3笔图像数据，并舍弃
         for (i = 0; i < 3; i++)
         {
@@ -321,7 +322,7 @@ int mlx_init(void)
             // printf("MLX90640_GetFrameData tr %f \n", tr);
             MLX90640_CalculateTo(mlx90640Frame, &mlx90640, emissivity, tr, mlx90640To); //The object temperatures
 
-            delay(500); //需要延时
+            usleep(500 * 1000); //需要延时
         }
     }
 
