@@ -40,7 +40,6 @@ else
     exit 0
 fi
 
-
 #set apt source 
 
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -55,10 +54,10 @@ deb https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main con
 # deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security buster/updates main contrib non-free
 EOF
 
-cp /etc/apt/sources.list.d/armbian.list  /etc/apt/sources.list.d/armbian.list.bak
-cat>/etc/apt/sources.list.d/armbian.list <<EOF
-deb https://mirrors.tuna.tsinghua.edu.cn/armbian/ buster main buster-utils buster-desktop
-EOF
+# cp /etc/apt/sources.list.d/armbian.list  /etc/apt/sources.list.d/armbian.list.bak
+# cat>/etc/apt/sources.list.d/armbian.list <<EOF
+# deb https://mirrors.tuna.tsinghua.edu.cn/armbian/ buster main buster-utils buster-desktop
+# EOF
 
 apt-get update -y
 apt-get upgrade -y
@@ -89,6 +88,7 @@ echo -e "\033[36m "config vim" \033[0m"
 timedatectl set-timezone Asia/Shanghai
 
 echo -e "alias date='date \"+%a %b %d %H:%M:%S %Z %Y\"'" >> /home/pi/.bashrc
+echo -e "alias date='date \"+%a %b %d %H:%M:%S %Z %Y\"'" >> /root/.bashrc
 date
 
 #wiringOP
@@ -99,6 +99,18 @@ chmod 777 build
 gpio -v
 echo -e "\033[36m "wiringOP" \033[0m"
 
+#python
+ln -s /usr/bin/python3 /usr/bin/python
 
+#cp config file
+cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.bak
+cp ./wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+cp /etc/network/interfaces /etc/network/interfaces.bak
+cp ./interfaces /etc/network/interfaces
+
+cp ./sun8i-h3-i2c0.dtbo /boot/dtb/overlay/sun8i-h3-i2c0.dtbo
+cp ./sun8i-h3-i2c1.dtbo /boot/dtb/overlay/sun8i-h3-i2c1.dtbo
+
+echo -e "\033[36m "config finish" \033[0m"
 exit 0
 
