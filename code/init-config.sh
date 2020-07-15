@@ -40,6 +40,10 @@ else
     exit 0
 fi
 
+#get top dir
+CURRENT_TOP_DIR=$(cd $(dirname $0); pwd)
+echo $CURRENT_TOP_DIR
+
 #set apt source 
 
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -101,16 +105,31 @@ echo -e "\033[36m "wiringOP" \033[0m"
 
 #python
 ln -s /usr/bin/python3 /usr/bin/python
+sudo apt-get install python3-pip
+sudo apt-get install python3-opencv python3-numpy python3-pandas python3-sklearn python3-skimage
 
-#cp config file
+
+#copy config file
+
+echo "copy config files"
+
 cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.bak
-cp ./wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf
+cp "${CURRENT_TOP_DIR}"/wpa_supplicant.conf /etc/wpa_supplicant/
 cp /etc/network/interfaces /etc/network/interfaces.bak
-cp ./interfaces /etc/network/interfaces
+cp "${CURRENT_TOP_DIR}"/interfaces /etc/network/
 
-cp ./sun8i-h3-i2c0.dtbo /boot/dtb/overlay/sun8i-h3-i2c0.dtbo
-cp ./sun8i-h3-i2c1.dtbo /boot/dtb/overlay/sun8i-h3-i2c1.dtbo
+cp /boot/dtb/overlay/sun8i-h3-i2c0.dtbo /boot/dtb/overlay/sun8i-h3-i2c0.dtbo.bak
+cp "${CURRENT_TOP_DIR}"/sun8i-h3-i2c0.dtbo /boot/dtb/overlay/
+
+cp /boot/dtb/overlay/sun8i-h3-i2c1.dtbo /boot/dtb/overlay/sun8i-h3-i2c1.dtbo.bak
+cp "${CURRENT_TOP_DIR}"/sun8i-h3-i2c1.dtbo /boot/dtb/overlay/
+
+cp "${CURRENT_TOP_DIR}"/libmlx.so /usr/lib/
+
+
+#open i2c
+
+
 
 echo -e "\033[36m "config finish" \033[0m"
 exit 0
-

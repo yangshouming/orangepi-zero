@@ -134,4 +134,11 @@ cd wiringOP
 chmod 777 build
 ./build
 
+
+/boot/armbianEnv.txt
+overlays=i2c0 i2c1 usbhost2 usbhost3
+
+
+
+
 */
