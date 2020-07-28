@@ -44,6 +44,11 @@ fi
 CURRENT_TOP_DIR=$(cd $(dirname $0); pwd)
 echo $CURRENT_TOP_DIR
 
+#creat log file
+touch config_log.txt
+echo -e "start" >> "${CURRENT_TOP_DIR}"/config_log.conf
+echo -e "$(date)" >> "${CURRENT_TOP_DIR}"/config_log.conf
+
 #set apt source 
 
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -95,6 +100,7 @@ echo -e "alias date='date \"+%a %b %d %H:%M:%S %Z %Y\"'" >> /home/pi/.bashrc
 echo -e "alias date='date \"+%a %b %d %H:%M:%S %Z %Y\"'" >> /root/.bashrc
 date
 
+
 #wiringOP
 git clone https://github.com/orangepi-xunlong/wiringOP.git
 cd wiringOP
@@ -105,8 +111,9 @@ echo -e "\033[36m "wiringOP" \033[0m"
 
 #python
 ln -s /usr/bin/python3 /usr/bin/python
-sudo apt-get install python3-pip
-sudo apt-get install python3-opencv python3-numpy python3-pandas python3-sklearn python3-skimage
+sudo apt-get install python3-pip -y
+pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+sudo apt-get install python3-opencv python3-numpy python3-pandas python3-sklearn python3-skimage -y
 
 
 #copy config file
@@ -128,8 +135,9 @@ cp "${CURRENT_TOP_DIR}"/libmlx.so /usr/lib/
 
 
 #open i2c
+sed -i 's/overlays=usbhost2 usbhost3/overlays=i2c0 i2c1 usbhost2 usbhost3/g' /boot/armbianEnv.txt
 
-
-
-echo -e "\033[36m "config finish" \033[0m"
+echo -e "end" >> "${CURRENT_TOP_DIR}"/config_log.conf
+echo -e "$(date)" >> "${CURRENT_TOP_DIR}"/config_log.conf
+echo -e "\033[36m "config finish,please reboot" \033[0m"
 exit 0
