@@ -127,6 +127,11 @@ armbianmonitor -m
 
 将里面的TimeoutStartSec=5min 修改为TimeoutStartSec=2sec
 
+sed -i 's/TimeoutStartSec=5min/TimeoutStartSec=2sec/g'
+
+sed -i 's/TimeoutStartSec=5min/TimeoutStartSec=2sec/g' /etc/systemd/system/network-online.target.wants/networking.service
+
+
 
 7.安装wiringOP
 git clone https://github.com/orangepi-xunlong/wiringOP.git
@@ -137,6 +142,29 @@ chmod 777 build
 
 /boot/armbianEnv.txt
 overlays=i2c0 i2c1 usbhost2 usbhost3
+
+
+
+
+
+
+
+
+1.插卡上电
+2.root登录，出厂密码为1234
+3.修改用户root密码pi123456
+4.创建用户pi 密码pi123456
+5.reboot 重启 用新的密码登录
+6.上传自己的orangepizero文件夹
+7.执行以下命令行
+cd orangepi-zero/code/
+chmod +x init-config.sh
+./init-config.sh
+
+
+
+
+
 
 
 

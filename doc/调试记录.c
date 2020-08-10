@@ -100,5 +100,100 @@ readelf -r libmlx.so|grep R_ARM_REL32
 cp libmlx.so /usr/lib/
 
 
+GPIO控制
+https://www.cnblogs.com/liangwode/p/5803350.html
+
+echo 7 > /sys/class/gpio/export
+
+echo out > /sys/class/gpio/gpio7/direction
+
+echo 1 >/sys/class/gpio/gpio7/value
+
+echo 0 >/sys/class/gpio/gpio7/value
+
+echo 7 > /sys/class/gpio/unexport
+
+
+
+
+
+拷机指令
+s,m,h,d,y (time)
+stress -c 4 --timeout 2d
+
+stress -c 4 --timeout 4h
+
+查看系统状态
+armbianmonitor -m
+
+armbianmonitor -m >> armbianmonitor_log.txt
+
+查看每个CPU状态 每5秒更新
+mpstat -P ALL 5
+
+
+
+
+https://blog.csdn.net/xiekaikaibing/article/details/97244493
+
+扩展SD卡空间 扩容
+resize_part
+
+
+https://blog.csdn.net/lixiaoxin1989/article/details/90476307/
+
+
+
+
+使能SPI
+armbian-config 打开spi-dev
+
+echo "param_spidev_spi_bus=1">>/boot/armbianEnv.txt
+
+
+
+
+pip3 install setuptools
+pip3 install wheel
+apt-get install python3-dev
+pip3 install spidev
+
+
+
+
+
+systemctl status network-manager.service
+
+
+
+//传感器测试
+cd orangepi-zero/code/drive/test/
+make
+./mlx.bin
+ls
+
+
+WiFi配置 关闭 network-manager
+
+sed -i 's/TimeoutStartSec=5min/TimeoutStartSec=30sec/g' /etc/systemd/system/network-online.target.wants/networking.service
+systemctl stop network-manager.service
+systemctl disable network-manager.service
+ls
+
+reboot
+
+//网速测试
+git clone https://github.com/sivel/speedtest-cli.git
+./speedtest-cli/speedtest.py --bytes
+
+
+
+//查看历史开机时间
+cat armbian-hardware-monitor.log |grep "Orange Pi Zero | 20.02.1"
+
+
+//WiFi驱动编译
+https://docs.armbian.com/User-Guide_Advanced-Features/#how-to-build-a-wireless-driver
+
 
 */
