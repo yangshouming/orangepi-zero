@@ -4,7 +4,7 @@
  * @Version: V0.0.1
  * @Date: 2020-07-06 16:23:43
  * @LastEditors: Stream
- * @LastEditTime: 2020-08-03 18:58:20
+ * @LastEditTime: 2020-08-14 17:22:06
  * @FilePath: \code\led\source\spi\main.c
  * @ChangeLog: ChangeLog
 *******************************************************************************/
@@ -16,6 +16,8 @@
 #include <wiringPi.h>
 #include <wiringPiSPI.h>
 
+#include "HET_RGB2HSL.h"
+
 #define SPI_CHAN 1
 
 static int myFd;
@@ -26,6 +28,9 @@ unsigned char spi_pixl[] = {
     0xc8,
     0xcc,
 };
+
+TS_RGB rgb;
+TS_HSL hsl;
 
 void rgb2spidata(unsigned long rgb, unsigned char *spi_rgb_data)
 {
@@ -44,7 +49,8 @@ void rgb2spidata(unsigned long rgb, unsigned char *spi_rgb_data)
     red = (rgb) >> 8;
     blue = (rgb) >> 0;
 
-    printf("red %02x,green %02x,blue %02x,\n", red, green, blue);
+    // printf("red %02x,green %02x,blue %02x,\n", red, green, blue);
+    printf("red %d,green %d,blue %d\n", red, green, blue);
 
     spi_rgb_data[spi_rgb_data_index++] = 0x00;
 
@@ -53,34 +59,34 @@ void rgb2spidata(unsigned long rgb, unsigned char *spi_rgb_data)
         /* code */
         temp_bit = (red & 0xc0) >> 6;
         red = red << 2;
-        printf("temp_bit %d ", temp_bit);
+        // printf("temp_bit %d ", temp_bit);
         spi_rgb_data[spi_rgb_data_index++] = spi_pixl[temp_bit];
     }
-    printf("\r\n");
+    // printf("\r\n");
 
     for (char i = 0; i < 4; i++)
     {
         /* code */
         temp_bit = (green & 0xc0) >> 6;
         green = green << 2;
-        printf("temp_bit %d ", temp_bit);
+        // printf("temp_bit %d ", temp_bit);
         spi_rgb_data[spi_rgb_data_index++] = spi_pixl[temp_bit];
     }
-    printf("\r\n");
+    // printf("\r\n");
 
     for (char i = 0; i < 4; i++)
     {
         /* code */
         temp_bit = (blue & 0xc0) >> 6;
         blue = blue << 2;
-        printf("temp_bit %d ", temp_bit);
+        // printf("temp_bit %d ", temp_bit);
         spi_rgb_data[spi_rgb_data_index++] = spi_pixl[temp_bit];
     }
-    printf("\r\n");
+    // printf("\r\n");
 
     for (char i = 0; i < 13; i++)
     {
-        printf("%02x ", spi_rgb_data[i]);
+        // printf("%02x ", spi_rgb_data[i]);
     }
 
     printf("\r\n");
@@ -127,11 +133,27 @@ int led_spi_off(void)
 
 int main(int argc, char **argv)
 {
+
+    rgb.Red = 100;
+    rgb.Green = 100;
+    rgb.Blue = 200;
+
     led_spi_init();
 
-    unsigned char red;
-    unsigned char green;
-    unsigned char blue;
+    printf("argv %s\n", argv[0]);
+
+    if (argc >= 4)
+    {
+        printf("argv %s\n", argv[1]);
+        printf("argv %s\n", argv[2]);
+        printf("argv %s\n", argv[3]);
+
+        rgb.Red = atoi(argv[1]);
+        rgb.Green = atoi(argv[2]);
+        rgb.Blue = atoi(argv[3]);
+    }
+    printf("rgb.Red %d, rgb.Green %d, rgb.Blue %d\n", rgb.Red, rgb.Green, rgb.Blue);
+    User_RGB_To_HSL(&rgb, &hsl);
     srand(time(NULL));
     while (1)
     {
@@ -145,11 +167,20 @@ int main(int argc, char **argv)
         // led_set_color(0x45413);
         // sleep(5);
 
-        red = rand() % 255;
-        green = rand() % 255;
-        blue = rand() % 255;
-        led_set_color_rgb(red, green, blue);
-        sleep(1);
+        // red = rand() % 255;
+        // green = rand() % 255;
+        // blue = rand() % 255;
+        hsl.Lightness++;
+        if (hsl.Lightness > 100)
+        {
+            hsl.Lightness = 5;
+        }
+        printf("hsl.Lightness %d\n", hsl.Lightness);
+        User_HSL_To_RGB(&rgb, &hsl);
+
+        led_set_color_rgb(rgb.Red, rgb.Green, rgb.Blue);
+        // sleep(1);
+        usleep(1000 * 1000);
 
         // led_spi_on();
         // sleep(1);

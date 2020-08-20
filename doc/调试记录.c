@@ -166,8 +166,15 @@ systemctl status network-manager.service
 
 
 
+
+
+//传感器驱动编译
+cd /root/orangepi-zero/code/drive/source
+make
+cp libmlx.so /usr/lib/
+
 //传感器测试
-cd orangepi-zero/code/drive/test/
+cd /root/orangepi-zero/code/drive/test
 make
 ./mlx.bin
 ls
@@ -176,6 +183,7 @@ ls
 WiFi配置 关闭 network-manager
 
 sed -i 's/TimeoutStartSec=5min/TimeoutStartSec=30sec/g' /etc/systemd/system/network-online.target.wants/networking.service
+systemctl status network-manager.service
 systemctl stop network-manager.service
 systemctl disable network-manager.service
 ls
@@ -194,6 +202,16 @@ cat armbian-hardware-monitor.log |grep "Orange Pi Zero | 20.02.1"
 
 //WiFi驱动编译
 https://docs.armbian.com/User-Guide_Advanced-Features/#how-to-build-a-wireless-driver
+
+
+//部署应用程序
+mkdir het && cd het && wget http://uuxia.top:8123/file/pi/newpi/installheto.sh && chmod +x installheto.sh && ./installheto.sh
+vim /etc/het/heto/setting.ini
+
+//删除应用程序
+rm -rf /etc/het/
+rm -rf /root/het/
+
 
 
 */

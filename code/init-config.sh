@@ -49,6 +49,12 @@ touch config_log.txt
 echo -e "start" >> "${CURRENT_TOP_DIR}"/config_log.conf
 echo -e "$(date)" >> "${CURRENT_TOP_DIR}"/config_log.conf
 
+#net config
+sed -i 's/TimeoutStartSec=5min/TimeoutStartSec=30sec/g' /etc/systemd/system/network-online.target.wants/networking.service
+systemctl stop network-manager.service
+systemctl disable network-manager.service
+systemctl status network-manager.service
+
 #set apt source 
 
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
@@ -117,7 +123,6 @@ sudo apt-get install python3-opencv python3-numpy python3-pandas python3-sklearn
 
 
 #copy config file
-
 echo "copy config files"
 
 cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant.conf.bak
@@ -131,11 +136,17 @@ cp "${CURRENT_TOP_DIR}"/sun8i-h3-i2c0.dtbo /boot/dtb/overlay/
 cp /boot/dtb/overlay/sun8i-h3-i2c1.dtbo /boot/dtb/overlay/sun8i-h3-i2c1.dtbo.bak
 cp "${CURRENT_TOP_DIR}"/sun8i-h3-i2c1.dtbo /boot/dtb/overlay/
 
-cp "${CURRENT_TOP_DIR}"/libmlx.so /usr/lib/
+cd /root/orangepi-zero/code/drive/source
+make
+cp libmlx.so /usr/lib/
+
+# cp "${CURRENT_TOP_DIR}"/libmlx.so /usr/lib/
+# chmod a+x /usr/lib/libmlx.so
 
 
 #open i2c
 sed -i 's/overlays=usbhost2 usbhost3/overlays=i2c0 i2c1 usbhost2 usbhost3/g' /boot/armbianEnv.txt
+
 
 echo -e "end" >> "${CURRENT_TOP_DIR}"/config_log.conf
 echo -e "$(date)" >> "${CURRENT_TOP_DIR}"/config_log.conf

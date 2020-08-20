@@ -5,7 +5,7 @@
  * @Version: V0.0.1
  * @Date: 2020-01-15 11:30:59
  * @LastEditors: Stream
- * @LastEditTime: 2020-06-29 10:59:25
+ * @LastEditTime: 2020-08-11 14:10:25
  * @FilePath: \code\drive\test\mlx_so_test.c
  * @ChangeLog: ChangeLog
 *******************************************************************************/
@@ -79,13 +79,13 @@ int main(int argc, char **argv)
             //以下是测试------------------------------------------------------------------------------------------
             gettimeofday(&end, NULL);                                                         //计时结束
             interval = 1000000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec); //统计运行耗时
-            printf("interval = %f  fps = %.1f \n", interval / 1000.0, 1000000.0 / interval);  //计算帧率
+            // printf("interval = %f  fps = %.1f \n", interval / 1000.0, 1000000.0 / interval);  //计算帧率
 
             int image_error = 0;
 
             max_temp = 0;
             min_temp = 1000;
-
+#if 0
             for (i = 0; i < 768;)
             {
 
@@ -117,7 +117,10 @@ int main(int argc, char **argv)
                 else
                 {
                     //正常数据打印
-                    printf("%.1f ", mlx90640To_app[i]);
+                    printf("%04.1f ", mlx90640To_app[i]);
+
+                    // printf("%04x ", mlx90640To_app[i]);
+                    // printf("%04x ", mlx90640Frame_app[i]);
                 }
 
                 i++;
@@ -126,7 +129,31 @@ int main(int argc, char **argv)
                     printf("\n");
                 }
             }
+#endif
 
+            for (i = 0; i < 768;)
+            {
+                printf("%04.1f ", mlx90640To_app[i]);
+                i++;
+                if ((i % 32) == 0)
+                {
+                    printf("\n");
+                }
+            }
+
+            printf("\n");
+
+            for (i = 0; i < 834;)
+            {
+                printf("%04x ", mlx90640Frame_app[i]);
+                i++;
+                if ((i % 32) == 0)
+                {
+                    printf("\n");
+                }
+            }
+            printf("\n");
+#if 0
             if (image_error == 0)
             {
                 printf("image ok \n");
@@ -150,6 +177,7 @@ int main(int argc, char **argv)
             }
             printf("min_temp:%.1f,max_temp:%.1f,error_image:%d", min_temp, max_temp, error_image);
             printf("\n");
+#endif
         }
         else
         {
@@ -158,7 +186,7 @@ int main(int argc, char **argv)
         }
 
         run_cnt++;
-        if (get_calc_data_cnt >= 57600) //成功率数据统计
+        if (get_calc_data_cnt >= 100) //成功率数据统计
         {
             get_source_data_percent = get_data_correct_percent(get_source_data_cnt, run_cnt);
             get_calc_data_percent = get_data_correct_percent(get_calc_data_cnt, run_cnt);
