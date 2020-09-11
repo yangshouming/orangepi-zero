@@ -55,8 +55,13 @@ systemctl stop network-manager.service
 systemctl disable network-manager.service
 systemctl status network-manager.service
 
-#set apt source 
+#DNS
+cat>/etc/resolv.conf <<EOF
+nameserver 114.114.114.114 #114
+nameserver 223.5.5.5 #阿里
+EOF
 
+#set apt source 
 cp /etc/apt/sources.list /etc/apt/sources.list.bak
 cat>/etc/apt/sources.list <<EOF
 deb https://mirrors.tuna.tsinghua.edu.cn/debian/ buster main contrib non-free
