@@ -205,8 +205,8 @@ https://docs.armbian.com/User-Guide_Advanced-Features/#how-to-build-a-wireless-d
 
 
 //部署应用程序
-mkdir het && cd het && wget http://uuxia.top:8123/file/pi/newpi/installheto.sh && chmod +x installheto.sh && ./installheto.sh
-vim /etc/het/heto/setting.ini
+cd ~
+mkdir het && cd het && wget http://uuxia.top:8123/file/pi/orpi/installheto.sh && chmod +x installheto.sh && ./installheto.sh
 
 //删除应用程序
 rm -rf /etc/het/
@@ -214,4 +214,12 @@ rm -rf /root/het/
 
 
 
+FEL USB下载模式
+http://sunxi.org/FEL#Through_a_special_SD_card_image
+
+
+镜像打包
+https://blog.csdn.net/u013451404/article/details/80552765
+https://blog.csdn.net/lixiaoxin1989/article/details/90476307
+https://www.osyunwei.com/archives/9368.html
 */

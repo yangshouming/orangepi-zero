@@ -4,56 +4,29 @@
  * @Version: V0.0.1
  * @Date: 2020-07-06 16:23:43
  * @LastEditors: Stream
- * @LastEditTime: 2020-08-04 19:07:30
+ * @LastEditTime: 2020-09-25 10:58:59
  * @FilePath: \code\led\source\gpio\main.c
  * @ChangeLog: ChangeLog
 *******************************************************************************/
 #include <stdio.h>
 #include <wiringPi.h>
 #include <unistd.h>
-
+#include "led.h"
 /*
-
 /sys/class/gpio
-
-
-
 */
-
-int pin_number = 8;
-
-int buzzer_init(void)
-{
-    wiringPiSetupPhys();
-    pinMode(pin_number, OUTPUT);
-    return 0;
-}
-
-int buzzer_on(void)
-{
-    digitalWrite(pin_number, HIGH);
-    return 0;
-}
-
-int buzzer_off(void)
-{
-    digitalWrite(pin_number, LOW);
-    return 0;
-}
 
 int main(int argc, char **argv)
 {
-    buzzer_init();
+    led_init();
     while (1)
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 8; i++)
         {
             /* code */
-            buzzer_on();
-            usleep(500 * 1000);
-            buzzer_off();
-            usleep(500 * 1000);
-            printf("blink\r\n");
+            led_set_color(i);
+            sleep(3);
+            printf("blink color %d\r\n", i);
         }
 
         break;

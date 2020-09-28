@@ -109,7 +109,7 @@ int main(int argc, char **argv)
     char time_info[256] = {0x00};
     char file_name[256] = {0x00};
     strftime(time_info, 80, "%Y-%m-%d_%H-%M-%S", info);
-    sprintf(file_name, "/home/pi/log%s.bin", time_info);
+    sprintf(file_name, "log%s.txt", time_info);
     printf("file_name %s\n", file_name);
 
     //测试采集次数参数
@@ -159,79 +159,22 @@ int main(int argc, char **argv)
             get_calc_data_cnt++;
 
             fp = fopen(file_name, "ab+");
-            fwrite(&mlx90640To_app, 4, 768, fp); //图像
-            fwrite(&temp, 8, 1, fp);             //时间戳
-            fclose(fp);
-
-            int image_error = 0;
-            temp_max = 0;
-            temp_min = 1000;
-
-            // printf("mlx_get_calculate_data\n");
             for (i = 0; i < 768;)
             {
-                //最大值与最小值
-                if (mlx90640To_app[i] > temp_max)
-                {
-                    temp_max = mlx90640To_app[i];
-                }
-
-                if (mlx90640To_app[i] < temp_min)
-                {
-                    temp_min = mlx90640To_app[i];
-                }
-
-                if (mlx90640To_app[i] > 40) //检测是否出现高温值
-                {
-                    printf("\npixel hight number=%d location=(%d,%d) value=%.1f***********************\n", i, i / 32, i % 32, mlx90640To_app[i]);
-                    // return -1; //定位高温点，并退出测试
-                    image_error = 1;
-                }
-                else if (mlx90640To_app[i] < 15)
-                {
-                    printf("\npixel low number=%d location=(%d,%d) value=%.1f***********************\n", i, i / 32, i % 32, mlx90640To_app[i]);
-                    // return -1; //定位高温点，并退出测试
-                    image_error = 1;
-                }
-                else
-                {
-                    //正常打印图像
-                    printf("%.1f ", mlx90640To_app[i]);
-                }
-
+                fprintf(fp, "%.1f ", mlx90640To_app[i]);
+                printf("%.1f ", mlx90640To_app[i]);
                 i++;
                 if ((i % 32) == 0)
                 {
+                    fprintf(fp, "\n");
                     printf("\n");
                 }
             }
-            printf("\n");
+            fprintf(fp, "\n");
+            fclose(fp);
 
-            if (image_error == 0)
-            {
-                printf("image ok \n");
-            }
-            else
-            {
-                error_image++;
-                printf("image eroor\n");
-                for (i = 0; i < 832;)
-                {
-
-                    printf("%04x ", mlx90640Frame_app[i]);
-                    i++;
-                    if ((i % 32) == 0)
-                    {
-                        printf("\n");
-                    }
-                }
-
-                // return -1;
-            }
-
-            printf("temp_max=%.1f temp_min=%.1f error image count=%d\n", temp_max, temp_min, error_image);
-
-            usleep(10 * 1000);
+            // usleep(10 * 1000);
+            sleep(60);
 
             gettimeofday(&end, NULL); //计时结束
             interval = 1000000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec);
