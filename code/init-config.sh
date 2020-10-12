@@ -124,8 +124,7 @@ echo -e "\033[36m "wiringOP" \033[0m"
 ln -s /usr/bin/python3 /usr/bin/python
 sudo apt-get install python3-pip -y
 pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
-sudo apt-get install python3-opencv python3-numpy python3-pandas python3-sklearn python3-skimage -y
-
+sudo apt-get install python3-opencv python3-numpy python3-pandas python3-sklearn python3-skimage libpython3.7 -y
 
 #copy config file
 echo "copy config files"
