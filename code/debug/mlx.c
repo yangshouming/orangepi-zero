@@ -109,7 +109,7 @@ int main(int argc, char **argv)
     char time_info[256] = {0x00};
     char file_name[256] = {0x00};
     strftime(time_info, 80, "%Y-%m-%d_%H-%M-%S", info);
-    sprintf(file_name, "log%s.txt", time_info);
+    sprintf(file_name, "sensor_temp_wall_%s.txt", time_info);
     printf("file_name %s\n", file_name);
 
     //测试采集次数参数
